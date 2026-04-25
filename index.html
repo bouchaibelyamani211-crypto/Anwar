@@ -1,1 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+  <title>ليلى وقمر البحر 🌊✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;600;700&display=swap');
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --ocean-deep: #021124;
+      --ocean-mid: #0b2b4a;
+      --ocean-surface: #1e5270;
+      --moon-glow: #ffe9b0;
+      --coral: #ff7b6b;
+      --pearl: #f8f0e3;
+      --fish-gold: #fcc870;
+      --whale: #2c4568;
+      --starfish: #e86a58;
+      --wave-foam: rgba(210, 235, 255, 0.5);
+    }
+
+    body {
+      font-family: 'El Messiri', sans-serif;
+      background: var(--ocean-deep);
+      color: var(--pearl);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+      transition: background 0.8s ease;
+    }
+
+    /* عمق المحيط الخلفي */
+    #ocean-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 30% 40%, #0d3b5c 0%, #021124 70%);
+      overflow: hidden;
+    }
+
+    /* فقاعات ترتفع */
+    .bubble {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      bottom: -100px;
+      animation: rise var(--dur) ease-in infinite;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(0.7);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    /* أشعة قمر تحت الماء */
+    .moon-beam {
+      position: fixed;
+      top: -20%;
+      left: 25%;
+      width: 180px;
+      height: 140%;
+      background: linear-gradient(180deg, rgba(255, 235, 170, 0.15) 0%, transparent 80%);
+      filter: blur(50px);
+      z-index: 1;
+      transform: rotate(5deg);
+      pointer-events: none;
+      animation: beamSway 14s ease-in-out infinite;
+    }
+    .moon-beam:nth-child(2) {
+      left: 55%;
+      width: 100px;
+      opacity: 0.5;
+      animation-duration: 18s;
+      animation-delay: -6s;
+    }
+
+    @keyframes beamSway {
+      0%, 100% { opacity: 0.4; transform: rotate(3deg); }
+      50% { opacity: 0.8; transform: rotate(8deg); }
+    }
+
+    /* القمرين في السماء (وهم البحر) */
+    #moons-container {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      z-index: 2;
+      display: flex;
+      gap: 18px;
+      filter: drop-shadow(0 0 20px rgba(255, 220, 130, 0.5));
+    }
+    .moon-shape {
+      width: 75px;
+      height: 75px;
+      background: radial-gradient(circle at 30% 30%, #fffbee, #fada6e);
+      border-radius: 50%;
+      box-shadow: 0 0 45px #ffd97d;
+      animation: floatMoon 6s ease-in-out infinite alternate;
+    }
+    .moon-shape.small {
+      width: 40px;
+      height: 40px;
+      opacity: 0.8;
+      animation-duration: 8s;
+    }
+    @keyframes floatMoon {
+      from { transform: translateY(5px); }
+      to { transform: translateY(-15px); }
+    }
+
+    /* صفحة القصة */
+    #story {
+      position: relative;
+      z-index: 10;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px 80px;
+      opacity: 0;
+      transform: translateY(50px) scale(0.96);
+      transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), transform 1s ease;
+      text-align: center;
+    }
+
+    .page.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .scene-card {
+      width: min(360px, 92vw);
+      background: rgba(8, 30, 52, 0.5);
+      backdrop-filter: blur(16px);
+      border-radius: 48px 48px 32px 32px;
+      padding: 20px 16px 14px;
+      margin-bottom: 24px;
+      border: 1.5px solid rgba(255, 235, 170, 0.2);
+      box-shadow: 0 25px 45px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,200,0.2);
+      position: relative;
+    }
+
+    .scene-card::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 55px;
+      height: 5px;
+      background: rgba(255, 225, 140, 0.5);
+      border-radius: 20px;
+      filter: blur(2px);
+    }
+
+    svg.scene-svg {
+      width: 100%;
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.7));
+    }
+
+    .story-text {
+      font-size: clamp(18px, 5.5vw, 26px);
+      line-height: 2;
+      max-width: 350px;
+      color: #f2e5d0;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      letter-spacing: 0.3px;
+    }
+
+    .story-text em {
+      color: var(--fish-gold);
+      font-style: normal;
+      font-weight: 700;
+      background: rgba(255,200,100,0.1);
+      padding: 0 6px;
+      border-radius: 20px;
+    }
+
+    .lullaby-box {
+      background: rgba(10, 40, 65, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 200, 0.25);
+      border-radius: 36px;
+      padding: 22px 24px;
+      font-size: clamp(16px, 5vw, 22px);
+      line-height: 2.2;
+      color: #ffe9b5;
+      margin-top: 18px;
+      max-width: 350px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    #nav-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: rgba(20, 70, 110, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1.5px solid rgba(255, 220, 110, 0.45);
+      color: #ffe7a0;
+      font-family: 'El Messiri', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      padding: 14px 38px;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.6s ease, opacity 1.8s ease;
+      letter-spacing: 1.2px;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    #nav-btn.ready {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #nav-btn:hover {
+      background: rgba(255, 190, 60, 0.25);
+      border-color: #fdd97c;
+      box-shadow: 0 0 35px rgba(255, 200, 60, 0.4);
+      transform: translateX(-50%) scale(1.03);
+    }
+
+    #nav-btn.hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    /* غطاء النوم */
+    #sleep-overlay {
+      position: fixed;
+      inset: 0;
+      background: #010a14;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 4.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sleep-overlay.fade {
+      opacity: 0.97;
+      pointer-events: all;
+    }
+
+    #sleep-msg {
+      text-align: center;
+      color: rgba(255, 235, 180, 0.6);
+      font-size: 24px;
+      line-height: 2.3;
+      opacity: 0;
+      transition: opacity 3.5s ease 2.2s;
+    }
+
+    #sleep-overlay.fade #sleep-msg {
+      opacity: 1;
+    }
+
+    .zzz-float {
+      position: fixed;
+      font-size: 28px;
+      color: rgba(200, 220, 255, 0.6);
+      animation: floatZ 4.5s ease-in forwards;
+      z-index: 210;
+      pointer-events: none;
+    }
+
+    @keyframes floatZ {
+      0% { opacity: 0; transform: translateY(10px) scale(0.7); }
+      25% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-130px) scale(1.5); }
+    }
+  </style>
+</head>
+<body>
+<!-- خلفية المحيط والفقاعات -->
+<div id="ocean-bg"></div>
+<div class="moon-beam"></div>
+<div class="moon-beam"></div>
+<div id="moons-container">
+  <div class="moon-shape"></div>
+  <div class="moon-shape small"></div>
+</div>
+
+<!-- overlay النوم -->
+<div id="sleep-overlay">
+  <div id="sleep-msg">
+    🌊 البحر هادي...<br>
+    و ليلى ناعسة فحب القمر...<br>
+    تصبحين على خير يا صغيرتي ✨
+  </div>
+</div>
+
+<!-- محتوى القصة -->
+<div id="story">
+
+  <!-- صفحة 1: البداية -->
+  <div class="page" id="p1">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="340" height="200" fill="#052237" rx="14"/>
+        <circle cx="170" cy="60" r="35" fill="#fde49b" opacity="0.9"/>
+        <circle cx="178" cy="52" r="28" fill="#fff7d0"/>
+        <path d="M0 155 Q80 135 170 155 T340 150 L340 200 L0 200 Z" fill="#0b3550"/>
+        <path d="M20 180 Q90 165 180 180 T320 175" stroke="#2d6b8f" stroke-width="2.5" fill="none" opacity="0.7"/>
+        <circle cx="70" cy="170" r="9" fill="#e86a58" opacity="0.8"/>
+        <text x="250" y="40" fill="#ffe6a0" font-size="21" font-weight="bold">★</text>
+        <text x="55" y="38" fill="white" font-size="14" opacity="0.8">✦</text>
+      </svg>
+    </div>
+    <p class="story-text" style="font-size:clamp(28px,8vw,40px); font-weight:700; color:#ffe7a0;">ليلى وقمر البحر</p>
+    <p class="story-text" style="opacity:0.7; font-size:16px;">حكاية قبل النوم من أعماق البحر 🌙</p>
+  </div>
+
+  <!-- صفحة 2: ليلى تنظر للبحر -->
+  <div class="page" id="p2">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#04253f"/>
+        <circle cx="260" cy="55" r="28" fill="#fae074" opacity="0.9"/>
+        <path d="M0 165 Q100 130 200 160 T340 155 L340 200 L0 200Z" fill="#0a4060"/>
+        <rect x="85" y="130" width="70" height="60" rx="10" fill="#1f3d55"/>
+        <circle cx="120" cy="115" r="22" fill="#f7c882"/>
+        <ellipse cx="120" cy="98" rx="20" ry="9" fill="#2e1c0f"/>
+        <circle cx="112" cy="116" r="2.5" fill="#0a0500"/>
+        <circle cx="128" cy="116" r="2.5" fill="#0a0500"/>
+        <path d="M114 123 Q120 129 126 123" stroke="#8b4a2a" stroke-width="1.8" fill="none"/>
+        <rect x="88" y="160" width="10" height="25" rx="3" fill="#648dad"/>
+        <rect x="102" y="160" width="10" height="25" rx="3" fill="#648dad"/>
+        <text x="30" y="70" fill="#ffdd99" font-size="16" opacity="0.8">🐚</text>
+      </svg>
+    </div>
+    <p class="story-text">ليلى الصغيرة وقفت عند الشط…<br>البحر ناداها <em>بصوت هادي</em>…<br>«تعالي يا ليلى… تعالي…» 🌊</p>
+  </div>
+
+  <!-- صفحة 3: قمر البحر يظهر -->
+  <div class="page" id="p3">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#021d33"/>
+        <radialGradient id="glowP3" cx="50%" cy="55%" r="50%">
+          <stop offset="0%" stop-color="#fada7a" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+        <rect width="340" height="200" fill="url(#glowP3)"/>
+        <ellipse cx="170" cy="140" rx="90" ry="55" fill="#1c4568"/>
+        <ellipse cx="170" cy="130" rx="70" ry="42" fill="#2b5f85"/>
+        <circle cx="140" cy="115" r="16" fill="#fff0b0"/>
+        <circle cx="200" cy="115" r="16" fill="#fff0b0"/>
+        <circle cx="142" cy="115" r="9" fill="#1b2a3a"/>
+        <circle cx="202" cy="115" r="9" fill="#1b2a3a"/>
+        <circle cx="146" cy="112" r="3.5" fill="white"/>
+        <circle cx="206" cy="112" r="3.5" fill="white"/>
+        <path d="M145 148 Q170 165 195 148" stroke="#ffe5b0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="170" cy="160" rx="36" ry="12" fill="#0b2b40" opacity="0.6"/>
+        <text x="80" y="55" fill="#ffcc88" font-size="20">✨</text>
+      </svg>
+    </div>
+    <p class="story-text">من الموج طلع <em>قمر البحر</em>…<br>وجهو يضوّي فالعتمة…<br>عيونو كبار و مليحين… 🌟</p>
+  </div>
+
+  <!-- صفحة 4: قمر البحر يتكلم -->
+  <div class="page" id="p4">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#03243b"/>
+        <ellipse cx="120" cy="130" rx="75" ry="50" fill="#2b5a78"/>
+        <circle cx="95" cy="115" r="17" fill="#ffe7a0"/>
+        <circle cx="95" cy="115" r="10" fill="#1c2e40"/>
+        <circle cx="99" cy="112" r="4" fill="white"/>
+        <path d="M78 130 Q95 142 112 130" stroke="#ffdd88" stroke-width="2" fill="none"/>
+        <rect x="240" y="115" width="50" height="55" rx="10" fill="#1f3d52"/>
+        <circle cx="265" cy="105" r="20" fill="#f7c882"/>
+        <ellipse cx="265" cy="90" rx="18" ry="8" fill="#2e1c0f"/>
+        <path d="M256 106 Q265 114 274 106" stroke="#7a4220" stroke-width="2" fill="none"/>
+        <text x="185" y="70" fill="#ffe6b0" font-size="22">💬</text>
+      </svg>
+    </div>
+    <p class="story-text">قالها: «لا تخافي يا ليلى…<br>أنا <em>نور</em>، حارس الأحلام…<br>جئت أحكي لك أسرار البحر» 🐋</p>
+  </div>
+
+  <!-- صفحة 5: رحلة تحت الماء -->
+  <div class="page" id="p5">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#043554"/>
+        <circle cx="50" cy="35" r="6" fill="#fcdb7a" opacity="0.8"/>
+        <circle cx="280" cy="45" r="9" fill="#fcdb7a" opacity="0.6"/>
+        <path d="M30 160 Q120 120 210 160 T330 155" stroke="#6aaed9" stroke-width="2" fill="none" opacity="0.5"/>
+        <ellipse cx="160" cy="150" rx="45" ry="25" fill="#16577a"/>
+        <circle cx="145" cy="140" r="11" fill="#ffdd99"/>
+        <circle cx="175" cy="140" r="11" fill="#ffdd99"/>
+        <circle cx="146" cy="139" r="5" fill="#0e1c28"/>
+        <circle cx="176" cy="139" r="5" fill="#0e1c28"/>
+        <ellipse cx="160" cy="160" rx="22" ry="10" fill="#072d44"/>
+        <text x="75" y="85" fill="#fcc870" font-size="18">🐠</text>
+        <text x="235" y="95" fill="#fcc870" font-size="22">🐟</text>
+      </svg>
+    </div>
+    <p class="story-text">نور مسك يد ليلى…<br>وغاصو مع بعض تحت الما…<br>شافت <em>سمكات ذهبية</em> ومرجان✨</p>
+  </div>
+
+  <!-- صفحة 6: حوت لطيف -->
+  <div class="page" id="p6">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#052f4a"/>
+        <ellipse cx="160" cy="140" rx="100" ry="45" fill="#2f5070"/>
+        <ellipse cx="110" cy="125" rx="35" ry="28" fill="#3d6585"/>
+        <circle cx="100" cy="118" r="5" fill="#071a28"/>
+        <path d="M100 108 Q106 98 112 108" stroke="#071a28" stroke-width="2.5" fill="none"/>
+        <ellipse cx="220" cy="140" rx="30" ry="15" fill="#3d6585" opacity="0.8"/>
+        <path d="M245 148 Q270 135 275 150" fill="#2f5070"/>
+        <text x="140" y="70" fill="#b8e0ff" font-size="20" opacity="0.8">🐋</text>
+      </svg>
+    </div>
+    <p class="story-text">قابلوا <em>حوتاً لطيفاً</em> يغني…<br>صوتو عميق و دافي…<br>ليلى ضحكت من قلبها 🐳</p>
+  </div>
+
+  <!-- صفحة 7: نجم البحر -->
+  <div class="page" id="p7">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#032d46"/>
+        <polygon points="170,45 188,95 240,95 198,125 212,175 170,145 128,175 142,125 100,95 152,95" fill="#e86a58" opacity="0.9"/>
+        <circle cx="170" cy="110" r="15" fill="#f28b7a"/>
+        <circle cx="150" cy="105" r="2.5" fill="white"/>
+        <circle cx="190" cy="105" r="2.5" fill="white"/>
+        <path d="M158 118 Q170 126 182 118" stroke="#5a2820" stroke-width="1.8" fill="none"/>
+        <text x="60" y="55" fill="#ffccaa" font-size="18">⭐</text>
+      </svg>
+    </div>
+    <p class="story-text">على الرملة لقاو <em>نجم بحر</em>…<br>قال: «أنت نجمة الليلة يا ليلى»<br>وهداها لؤلؤة صغيرة 🤍</p>
+  </div>
+
+  <!-- صفحة 8: النعاس -->
+  <div class="page" id="p8">
+    <div class="scene-card">
+      <svg class="scene-svg" viewBox="0 0 340 200">
+        <rect width="340" height="200" fill="#011627"/>
+        <circle cx="170" cy="100" r="70" fill="#fde49b" opacity="0.12"/>
+        <circle cx="170" cy="100" r="45" fill="#fde49b" opacity="0.2"/>
+        <ellipse cx="120" cy="145" rx="55" ry="28" fill="#192f42"/>
+        <ellipse cx="220" cy="148" rx="50" ry="25" fill="#192f42"/>
+        <circle cx="115" cy="140" r="4" fill="#ffe9b0" opacity="0.7"/>
+        <circle cx="225" cy="142" r="3.5" fill="#ffe9b0" opacity="0.6"/>
+        <text x="140" y="80" font-size="26" fill="#ffd97d" opacity="0.5">🌙</text>
+      </svg>
+    </div>
+    <div class="lullaby-box">
+      نعس الموج… نعس الحوت…<br>
+      <em>نور</em> همس لليلى:<br>
+      «تصبحي على خير يا قمر…<br>
+      البحر يحرس أحلامك» 🌊✨
+    </div>
+  </div>
+</div>
+
+<button id="nav-btn" onclick="nextPage()">🌊 التالي</button>
+
+<script>
+  (function() {
+    // فقاعات متحركة
+    const oceanBg = document.getElementById('ocean-bg');
+    for (let i = 0; i < 55; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      const size = Math.random() * 35 + 12;
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.left = Math.random() * 95 + '%';
+      bubble.style.setProperty('--dur', (Math.random() * 9 + 7) + 's');
+      bubble.style.animationDelay = Math.random() * 8 + 's';
+      oceanBg.appendChild(bubble);
+    }
+
+    const pages = document.querySelectorAll('.page');
+    let current = 0;
+    let btnLocked = false;
+    const btn = document.getElementById('nav-btn');
+    const sleepOverlay = document.getElementById('sleep-overlay');
+
+    const pageDelay = [0, 3200, 3800, 4000, 4200, 4500, 5000, 6000];
+
+    function showPage(idx) {
+      if (idx >= pages.length) return;
+      pages[idx].classList.add('visible');
+      pages[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      btn.classList.remove('ready');
+      btnLocked = true;
+
+      if (idx === pages.length - 1) {
+        setTimeout(() => {
+          btn.textContent = '💤 نامي يا ليلى';
+          btn.onclick = goSleep;
+          btn.classList.add('ready');
+          btnLocked = false;
+          // نوم تلقائي بعد وقت
+          setTimeout(() => {
+            if (!sleepOverlay.classList.contains('fade')) goSleep();
+          }, 13000);
+        }, pageDelay[idx]);
+      } else {
+        setTimeout(() => {
+          btn.classList.add('ready');
+          btnLocked = false;
+        }, pageDelay[idx]);
+      }
+    }
+
+    window.nextPage = function() {
+      if (btnLocked) return;
+      current++;
+      if (current < pages.length) {
+        showPage(current);
+      } else {
+        goSleep();
+      }
+    };
+
+    function goSleep() {
+      btn.classList.add('hidden');
+      spawnZzz();
+      setTimeout(() => {
+        sleepOverlay.classList.add('fade');
+      }, 500);
+    }
+
+    function spawnZzz() {
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const z = document.createElement('div');
+          z.className = 'zzz-float';
+          const symbols = ['z','z','Z','🌙','✨'];
+          z.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          z.style.left = (10 + Math.random() * 70) + 'vw';
+          z.style.bottom = (15 + Math.random() * 30) + 'vh';
+          z.style.animationDuration = (4 + Math.random() * 3) + 's';
+          document.body.appendChild(z);
+          setTimeout(() => z.remove(), 6000);
+        }, i * 350);
+      }
+    }
+
+    // بداية
+    showPage(0);
+    btn.onclick = nextPage;
+  })();
+</script>
+</body>
+          </html>
